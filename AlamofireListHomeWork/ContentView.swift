@@ -1,21 +1,32 @@
-//
-//  ContentView.swift
-//  AlamofireListHomeWork
-//
-//  Created by Nurali Shamel on 27.04.2024.
-//
-
 import SwiftUI
 
-struct ContentView: View {
+struct AssetDetailView: View {
+    let asset: Asset
+    
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+            Text("ID: \(asset.id)")
+            Text("Symbol: \(asset.symbol)")
+            Text("Price (USD): \(asset.priceUsd)")
         }
-        .padding()
+        .navigationTitle(asset.symbol)
+    }
+}
+
+struct ContentView: View {
+    @StateObject var viewModel = AssetViewModel()
+    
+    var body: some View {
+        NavigationView {
+            List(viewModel.assets) { asset in
+                NavigationLink(destination: AssetDetailView(asset: asset)) {
+                    Text("\(asset.symbol): $\(asset.priceUsd)")
+                }
+            }
+        }
+        .onAppear {
+            viewModel.fetchAssets()
+        }
     }
 }
 
